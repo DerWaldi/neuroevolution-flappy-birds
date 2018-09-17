@@ -133,7 +133,7 @@ class Bird {
         this.sprite = cc.Sprite.create("#bird3.png");
         winSize = cc.director.getWinSize();
 
-        var p = cc.p(winSize.width / 2 - 80, winSize.height * 3 / 4);
+        var p = cc.p(winSize.width / 2 - 80, winSize.height * 1 / 2);
 
         this.sprite.x = p.x;
         this.sprite.y = p.y;

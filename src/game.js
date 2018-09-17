@@ -52,7 +52,7 @@ var GameScene = cc.Scene.extend({
             if(this.hoseCounter > 1000)
                 this.hoseCounter = 0;
 
-            this.hoses.push(new Hose(this.worldLayer, x, this.hoseMap[this.hoseCounter]));
+            this.hoses.push(new Hose(this.worldLayer, x,));// this.hoseMap[this.hoseCounter]));
         }
 
         this.createWorld = () => {
