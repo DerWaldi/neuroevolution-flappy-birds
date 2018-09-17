@@ -231,13 +231,13 @@ class Bird {
         let inputs = [];
         let closest = this.scene.getClosestHose(); 
         // x position of closest pipe
-        inputs[0] = map(closest.x - this.body.GetPosition().x, 0, winSize.width, 0, 1);
+        inputs[0] = map(closest.x - this.body.GetPosition().x, 0, winSize.width / PTM_RATIO, 0, 1);
         // top of closest pipe opening
-        inputs[1] = map(closest.down_y, 0, winSize.height, 0, 1);
+        inputs[1] = map(closest.down_y, 0, winSize.height / PTM_RATIO, 0, 1);
         // bottom of closest pipe opening
-        inputs[2] = map(closest.up_y, 0, winSize.height, 0, 1);
+        inputs[2] = map(closest.up_y, 0, winSize.height / PTM_RATIO, 0, 1);
         // bird's y position
-        inputs[3] = map(this.body.GetPosition().y, 0, winSize.height, 0, 1);
+        inputs[3] = map(this.body.GetPosition().y, 0, winSize.height / PTM_RATIO, 0, 1);
         // bird's y velocity
         inputs[4] = map(this.body.GetLinearVelocity().y, -10, 10, 0, 1);
 

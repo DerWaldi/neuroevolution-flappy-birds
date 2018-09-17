@@ -128,6 +128,12 @@ var GameScene = cc.Scene.extend({
             child6.brain.mutate();
         
             this.population = [child1, child2, child3, child4, child5, child6, parent1, parent2];
+            var popuCount = this.population.length;
+            for(var i = 0; i < popuCount; i++) {
+                var b = this.population[i].clone();
+                b.brain.mutate();
+                this.population.push(b);
+            }
             this.fittest = [];
 
             this.generation++;
