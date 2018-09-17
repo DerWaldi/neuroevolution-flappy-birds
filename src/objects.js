@@ -101,7 +101,7 @@ class Ground {
 }
 
 class Hose {
-    constructor(scene, x) {   
+    constructor(scene, x, y) {   
         this.scene = scene; 
         this.node = cc.Node.create();
         
@@ -109,7 +109,9 @@ class Hose {
 
         var hoseHeight = 830;
         var acrossHeight = 300;
-        var downHeight = 100 + getRandom(300);
+        if(!y)
+            y = getRandom(300);
+        var downHeight = 100 + y;
         var upHeight = winSize.height + 100 - downHeight - acrossHeight;
     
         var hoseX = x;        

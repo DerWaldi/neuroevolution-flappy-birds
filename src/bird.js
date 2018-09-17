@@ -56,6 +56,70 @@ class Brain {
         clonie.output_weights = tf.clone(this.output_weights);
         return clonie;
     }
+
+    visualize(container) {
+        var inputLabels = [
+            "x position of closest pipe",
+            "top of closest pipe opening",
+            "bottom of closest pipe opening",
+            "bird's y position",
+            "bird's y velocity",
+        ];
+        var outputLabels = [
+            "Idle",
+            "Flap",
+        ];    
+        // create an array with nodes
+        var nodes = [];        
+        for(var i = 0; i < this.input_nodes; i++) {
+            nodes.push({id: 1 + i, label: inputLabels[i], shape: 'dot', font: '18px verdana black', vadjust:"left", margin:{right: 150}});
+        }       
+        for(var i = 0; i < this.hidden_nodes; i++) {
+            nodes.push({id: 1 + this.input_nodes + i, label: '', shape: 'dot'});
+        }  
+        for(var i = 0; i < this.output_nodes; i++) {
+            nodes.push({id: 1 + this.input_nodes + this.hidden_nodes + i, label: outputLabels[i], shape: 'dot', font: '18px verdana black'});
+        }
+    
+        // create an array with edges
+        var edges = [];
+        let ih = this.input_weights.dataSync();
+        for(var i = 0; i < this.input_nodes; i++) {            
+            for(var j = 0; j < this.hidden_nodes; j++) {
+                edges.push({
+                    from: 1 + i, 
+                    to: 1 + this.input_nodes + j, 
+                    value: ih[i*this.input_nodes + j]
+                });
+            }
+        }        
+        let ho = this.output_weights.dataSync();
+        for(var i = 0; i < this.hidden_nodes; i++) {            
+            for(var j = 0; j < this.output_nodes; j++) {
+                edges.push({
+                    from: 1 + this.input_nodes + i, 
+                    to: 1 + this.hidden_nodes + this.input_nodes + j, 
+                    value: ho[i*this.hidden_nodes + j]
+                });
+            }
+        }
+    
+        // create a network
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+        var options = {
+            layout: {
+                hierarchical: {
+                    direction: 'LR',
+                    sortMethod: "directed",
+                    levelSeparation: 400
+                }
+            }
+            };
+        var network = new vis.Network(container, data, options);
+    }
     
     dispose() {
         this.input_weights.dispose();

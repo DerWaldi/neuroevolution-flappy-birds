@@ -32,68 +32,90 @@
     <meta name="browsermode" content="application">
     <meta name="x5-page-mode" content="app">
 
-<style type="text/css">
-html {
-  -ms-touch-action: none;
-}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
 
-body, canvas, div {
-  margin: 0;
-  padding: 0;
-  outline: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  -khtml-user-select: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
+    <style type="text/css">
+        html {
+          -ms-touch-action: none;
+        }
 
-body {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border: 0;
-  margin: 0;
+        body, canvas, div {
+          margin: 0;
+          padding: 0;
+          outline: none;
+          -moz-user-select: none;
+          -webkit-user-select: none;
+          -ms-user-select: none;
+          -khtml-user-select: none;
+          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
 
-  cursor: default;
-  color: #888;
-  background-color: #333;
+        body {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          padding: 0;
+          border: 0;
+          margin: 0;
 
-  text-align: center;
-  font-family: Helvetica, Verdana, Arial, sans-serif;
+          cursor: default;
+          color: #888;
 
-  display: flex;
-  flex-direction: column;
-}
+          text-align: center;
+          font-family: Helvetica, Verdana, Arial, sans-serif;
 
-#Cocos2dGameContainer {
-  position: absolute;
-  margin: 0;
-  overflow: hidden;
-  left: 0px;
-  top: 0px;
+          display: flex;
+          flex-direction: column;
+        }
 
-  display: -webkit-box;
-  -webkit-box-orient: horizontal;
-  -webkit-box-align: center;
-  -webkit-box-pack: center;
-}
+        #Cocos2dGameContainer {
+          height: 400px !important;
+          width: 780px !important;
+          position: relative;
+          overflow: hidden;
+          left: calc(50% - 390px);
+          padding: 0 !important;
 
-canvas {
-  background-color: rgba(0, 0, 0, 0);
-}
-</style>
+          display: -webkit-box;
+          -webkit-box-orient: horizontal;
+          -webkit-box-align: center;
+          -webkit-box-pack: center;
+          margin: auto;
+        }
+
+        #gameCanvas {
+          max-height: 400px;
+          max-width: 780px;
+        }
+
+        #mynetwork {
+          position: relative;
+          overflow: hidden;
+          left: calc(50% - 390px);
+
+          width: 780px;
+          height: 300px;
+        }
+
+        canvas {
+          background-color: rgba(0, 0, 0, 0);
+        }
+    </style>
 </head>
 <body>
-<script src="res/loading.js"></script>
-<canvas id="gameCanvas" width="480" height="720"></canvas>
-<!-- Load Cocos2D-js.js -->
-<script src="lib/cocos2d-js-v3.13.js"></script>
-<!-- Load TensorFlow.js -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.0"> </script>
-<script cocos src="main.js"></script>
+  <script src="res/loading.js"></script>
+  <div id="mynetwork"></div>
+
+  <canvas id="gameCanvas"></canvas>
+  <!-- Load Cocos2D-js.js -->
+  <script src="lib/cocos2d-js-v3.13.js"></script>
+  <!-- Load TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.13.0"> </script>
+  <!-- Load Vis.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"> </script>
+
+  <script cocos src="main.js"></script>
 </body>
 </html>

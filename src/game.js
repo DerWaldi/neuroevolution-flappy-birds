@@ -40,8 +40,23 @@ var GameScene = cc.Scene.extend({
         this.generationLabel.setAnchorPoint(0,0);
         this.guiLayer.addChild(this.generationLabel);
         
+        // pre generate hose positions
+        this.hoseCounter = 0;
+        this.hoseMap = [];
+        for(var i = 0; i < 1000; i++) {
+            this.hoseMap.push(getRandom(300));
+        }      
+
+        this.generateHose = (x) => {
+            this.hoseCounter++;
+            if(this.hoseCounter > 1000)
+                this.hoseCounter = 0;
+
+            this.hoses.push(new Hose(this.worldLayer, x, this.hoseMap[this.hoseCounter]));
+        }
 
         this.createWorld = () => {
+            this.hoseCounter = 0;
             // Destroy World
             while(this.world.GetBodyCount() > 0) {
                 this.world.DestroyBody(this.world.GetBodyList());
@@ -56,8 +71,9 @@ var GameScene = cc.Scene.extend({
             }      
             this.ground = new Ground(this.worldLayer);
             this.hoses = [];
-            for(var i = 0; i < 3; i++)
-                this.hoses.push(new Hose(this.worldLayer, 3000 + i*1000));
+            for(var i = 0; i < 3; i++) {
+                this.generateHose(2000 + i*1000);
+            }
         }  
 
         // World Layer
@@ -80,13 +96,15 @@ var GameScene = cc.Scene.extend({
             } else {
                 return this.hoses[0];
             }
-        }
+        }  
         
         this.generation = 0;
         this.population = [];
         this.fittest = [];
         for(var i = 0; i < POPULATION_SIZE; i++)
             this.population.push(new Bird(this.worldLayer, i));
+            
+        this.population[0].brain.visualize(document.getElementById('mynetwork'));
             
         this.gameState = 0;
         this.highscore = 0;
@@ -96,6 +114,7 @@ var GameScene = cc.Scene.extend({
             // do evolution
             var child1 = this.fittest[0].crossover(this.fittest[1]);
             var child2 = this.fittest[1].crossover(this.fittest[0]);
+            this.fittest[1].brain.visualize(document.getElementById('mynetwork'));
 
             var child3 = child1.clone();
             child3.brain.mutate();
@@ -151,6 +170,8 @@ var GameScene = cc.Scene.extend({
     },
     update:function (dt) { 
 
+        //dt = dt * 1.5;
+
         var velocityIterations = 8;
         var positionIterations = 1;
 
@@ -166,7 +187,7 @@ var GameScene = cc.Scene.extend({
                     var firstHose = this.hoses[0];
                     var lastHose = this.hoses[this.hoses.length - 1];
                     this.hoses.shift();
-                    this.hoses.push(new Hose(this.worldLayer, lastHose.body1.GetPosition().x * PTM_RATIO + 1000));
+                    this.generateHose(lastHose.body1.GetPosition().x * PTM_RATIO + 1000);
                     firstHose.destroy();
                 }
             }
