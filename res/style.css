@@ -1,0 +1,77 @@
+html {
+-ms-touch-action: none;
+}
+
+body, canvas, div {
+margin: 0;
+padding: 0;
+outline: none;
+-moz-user-select: none;
+-webkit-user-select: none;
+-ms-user-select: none;
+-khtml-user-select: none;
+-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+padding: 0;
+border: 0;
+margin: 0;
+
+cursor: default;
+color: #888;
+
+text-align: center;
+font-family: Helvetica, Verdana, Arial, sans-serif;
+
+display: flex;
+flex-direction: column;
+}
+
+#Cocos2dGameContainer {
+height: 460px !important;
+width: 780px !important;
+position: relative;
+overflow: hidden;
+left: calc(50% - 390px);
+padding: 0 !important;
+
+display: -webkit-box;
+-webkit-box-orient: horizontal;
+-webkit-box-align: center;
+-webkit-box-pack: center;
+margin: auto;
+}
+
+#gameCanvas {
+    height: 400px;
+    width: 780px;
+    max-height: 400px;
+    max-width: 780px;
+}
+
+#mynetwork {
+    position: relative;
+    overflow: hidden;
+    left: calc(50% - 390px);
+
+    width: 780px;
+    height: 300px;
+}
+
+canvas {
+background-color: rgba(0, 0, 0, 0);
+}
+
+.parameterBox {
+    position: relative;
+    overflow: hidden;
+    left: calc(50% - 390px);    
+    width: 780px;
+    height: 300px;
+}

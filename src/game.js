@@ -1,7 +1,22 @@
 var winSize;
 var curScene;
 
-const POPULATION_SIZE = 16;
+function Parameters() {}
+Parameters.NewMapEachGen = true;
+Parameters.RandomHoseX = false;
+Parameters.PopulationSize = 16;
+Parameters.Acceleration = 0.25;
+Parameters.HiddenLayerSize = 6;
+
+Parameters.InputVector = [];
+Parameters.InputVector["pipe.x"] = true;
+Parameters.InputVector["pipe.yUp"] = true;
+Parameters.InputVector["pipe.yDown"] = true;
+Parameters.InputVector["bird.posY"] = true;
+Parameters.InputVector["bird.velX"] = true;
+Parameters.InputVector["bird.velY"] = false;
+
+Parameters.Paused = false;
 
 var GameScene = cc.Scene.extend({
     onEnter:function () {
@@ -31,7 +46,13 @@ var GameScene = cc.Scene.extend({
             if(this.hoseCounter > 1000)
                 this.hoseCounter = 0;
 
-            this.hoses.push(new Hose(this.worldLayer, x,));// this.hoseMap[this.hoseCounter]));
+            var xOffset = Parameters.RandomHoseX ? (getRandom(300) - 50) : 0;
+
+            if(Parameters.NewMapEachGen) {
+                this.hoses.push(new Hose(this.worldLayer, x,));
+            } else {
+                this.hoses.push(new Hose(this.worldLayer, x + xOffset, this.hoseMap[this.hoseCounter]));
+            }
         }
 
         this.createWorld = () => {
@@ -84,10 +105,10 @@ var GameScene = cc.Scene.extend({
         }  
         
         this.fittest = [];
-        for(var i = 0; i < POPULATION_SIZE; i++)
+        for(var i = 0; i < Parameters.PopulationSize; i++)
             this.population.push(new Bird(this.worldLayer, i));
             
-        this.population[0].brain.visualize(document.getElementById('mynetwork'));
+        this.population[0].visualize(document.getElementById('mynetwork'));
         this.hud.updateAliveBirds(this.population.length, 16);
             
         this.gameState = 0;
@@ -98,7 +119,7 @@ var GameScene = cc.Scene.extend({
             // do evolution
             var child1 = this.fittest[0].crossover(this.fittest[1]);
             var child2 = this.fittest[1].crossover(this.fittest[0]);
-            this.fittest[1].brain.visualize(document.getElementById('mynetwork'));
+            this.fittest[1].visualize(document.getElementById('mynetwork'));
 
             var child3 = child1.clone();
             child3.brain.mutate();
@@ -112,11 +133,8 @@ var GameScene = cc.Scene.extend({
             child6.brain.mutate();
         
             this.population = [child1, child2, child3, child4, child5, child6, parent1, parent2];
-            var popuCount = this.population.length;
-            for(var i = 0; i <= popuCount; i++) {
-                var b = this.population[i].clone();
-                b.brain.mutate();
-                this.population.push(b);
+            while(this.population.length < Parameters.PopulationSize) {
+                this.population.push(this.population[getRandom(this.population.length)].clone().mutate());
             }
             this.fittest = [];
 
@@ -150,6 +168,9 @@ var GameScene = cc.Scene.extend({
     },
     update:function (dt) { 
 
+        if(Parameters.Paused)
+            return;
+        
         //dt = dt * 1.5;
 
         var velocityIterations = 8;

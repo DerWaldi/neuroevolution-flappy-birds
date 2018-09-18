@@ -57,18 +57,7 @@ class Brain {
         return clonie;
     }
 
-    visualize(container) {
-        var inputLabels = [
-            "x position of closest pipe",
-            "top of closest pipe opening",
-            "bottom of closest pipe opening",
-            "bird's y position",
-            "bird's x velocity",
-        ];
-        var outputLabels = [
-            "Idle",
-            "Flap",
-        ];    
+    visualize(container, inputLabels, outputLabels) { 
         // create an array with nodes
         var nodes = [];        
         for(var i = 0; i < this.input_nodes; i++) {
@@ -167,9 +156,9 @@ class Bird {
         this.body.name = "bird";
         
         this.body.ApplyImpulse(new b2Vec2(5, 0), this.body.GetWorldCenter())
-        this.body.ApplyForce(new b2Vec2(0.25,0), this.body.GetWorldCenter() );
+        this.body.ApplyForce(new b2Vec2(Parameters.Acceleration,0), this.body.GetWorldCenter() );
 
-        this.brain = new Brain(5, 6, 2);
+        this.brain = new Brain(this.getInputVectorSize(), Parameters.HiddenLayerSize, 2);
         this.alive = true;
     }
 
@@ -230,23 +219,82 @@ class Bird {
 		child.brain.output_weights = tf.tensor(child_out_dna, output_shape);
 		
 		return child;
-	}
+    }
+    
+    visualize(container) {
+        var inputLabels = [];        
+        // x position of closest pipe
+        if(Parameters.InputVector["pipe.x"])
+            inputLabels.push("x position of closest pipe");
+        // top of closest pipe opening
+        if(Parameters.InputVector["pipe.yDown"])
+            inputLabels.push("top of closest pipe opening");
+        // bottom of closest pipe opening
+        if(Parameters.InputVector["pipe.yDown"])
+            inputLabels.push("bottom of closest pipe opening");
+        // bird's y position
+        if(Parameters.InputVector["bird.posY"])
+            inputLabels.push("bird's y position");
+        // bird's y velocity
+        if(Parameters.InputVector["bird.velY"])
+            inputLabels.push("bird's y velocity");
+        // bird's x velocity
+        if(Parameters.InputVector["bird.velX"])
+            inputLabels.push("bird's x velocity");
+
+        var outputLabels = [
+            "Idle",
+            "Flap",
+        ];    
+        this.brain.visualize(container, inputLabels, outputLabels);
+    }
+    
+    getInputVectorSize() {
+        var count = 0;
+        // x position of closest pipe
+        if(Parameters.InputVector["pipe.x"])
+            count++;
+        // top of closest pipe opening
+        if(Parameters.InputVector["pipe.yDown"])
+            count++;
+        // bottom of closest pipe opening
+        if(Parameters.InputVector["pipe.yDown"])
+            count++;
+        // bird's y position
+        if(Parameters.InputVector["bird.posY"])
+            count++;
+        // bird's y velocity
+        if(Parameters.InputVector["bird.velY"])
+            count++;
+        // bird's x velocity
+        if(Parameters.InputVector["bird.velX"])
+            count++;
+        
+        return count;
+    }
 
     think() {
         let inputs = [];
         let closest = this.scene.getClosestHose(); 
         // x position of closest pipe
-        inputs[0] = map(closest.x - this.body.GetPosition().x, 0, winSize.width / PTM_RATIO, 0, 1);
+        if(Parameters.InputVector["pipe.x"])
+            inputs.push(map(closest.x - this.body.GetPosition().x, 0, winSize.width / PTM_RATIO, 0, 1));
         // top of closest pipe opening
-        inputs[1] = map(closest.down_y, 0, winSize.height / PTM_RATIO, 0, 1);
+        if(Parameters.InputVector["pipe.yDown"])
+            inputs.push(map(closest.down_y, 0, winSize.height / PTM_RATIO, 0, 1));
         // bottom of closest pipe opening
-        inputs[2] = map(closest.up_y, 0, winSize.height / PTM_RATIO, 0, 1);
+        if(Parameters.InputVector["pipe.yDown"])
+            inputs.push(map(closest.up_y, 0, winSize.height / PTM_RATIO, 0, 1));
         // bird's y position
-        inputs[3] = map(this.body.GetPosition().y, 0, winSize.height / PTM_RATIO, 0, 1);
+        if(Parameters.InputVector["bird.posY"])
+            inputs.push(map(this.body.GetPosition().y, 0, winSize.height / PTM_RATIO, 0, 1));
         // bird's y velocity
-        //inputs[4] = 0;//map(this.body.GetLinearVelocity().y, -10, 10, 0, 1);
+        if(Parameters.InputVector["bird.velY"])
+            inputs.push(map(this.body.GetLinearVelocity().y, 5, 50, 0, 1));
         // bird's x velocity
-        inputs[4] = map(this.body.GetLinearVelocity().y, 5, 50, 0, 1);
+        if(Parameters.InputVector["bird.velX"])
+            inputs.push(map(this.body.GetLinearVelocity().x, 5, 50, 0, 1));
+
 
         // Get the outputs from the network
         let action = this.brain.predict(inputs);

@@ -31,82 +31,88 @@
     <meta name="x5-page-mode" content="app">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
-
-    <style type="text/css">
-        html {
-          -ms-touch-action: none;
-        }
-
-        body, canvas, div {
-          margin: 0;
-          padding: 0;
-          outline: none;
-          -moz-user-select: none;
-          -webkit-user-select: none;
-          -ms-user-select: none;
-          -khtml-user-select: none;
-          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-        }
-
-        body {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          padding: 0;
-          border: 0;
-          margin: 0;
-
-          cursor: default;
-          color: #888;
-
-          text-align: center;
-          font-family: Helvetica, Verdana, Arial, sans-serif;
-
-          display: flex;
-          flex-direction: column;
-        }
-
-        #Cocos2dGameContainer {
-          height: 400px !important;
-          width: 780px !important;
-          position: relative;
-          overflow: hidden;
-          left: calc(50% - 390px);
-          padding: 0 !important;
-
-          display: -webkit-box;
-          -webkit-box-orient: horizontal;
-          -webkit-box-align: center;
-          -webkit-box-pack: center;
-          margin: auto;
-        }
-
-        #gameCanvas {
-          max-height: 400px;
-          max-width: 780px;
-        }
-
-        #mynetwork {
-          position: relative;
-          overflow: hidden;
-          left: calc(50% - 390px);
-
-          width: 780px;
-          height: 300px;
-        }
-
-        canvas {
-          background-color: rgba(0, 0, 0, 0);
-        }
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="res/style.css">
 </head>
 <body>
   <script src="res/loading.js"></script>
-  <div id="mynetwork"></div>
+
+  <div id="Brain" class="tabcontent">
+    <div id="mynetwork"></div>
+  </div>
 
   <canvas id="gameCanvas"></canvas>
+  <br/>
+  <div class="row parameterBox">
+    <div class="col-4">
+      <p>Neural Net Input Vector</p> 
+      <input type="checkbox" onclick="toggleInputVector(this)" value="pipe.x" checked> Pipe X position<br>
+      <input type="checkbox" onclick="toggleInputVector(this)" value="pipe.yUp" checked> Pipe Y Up position<br>
+      <input type="checkbox" onclick="toggleInputVector(this)" value="pipe.yDown" checked> Pipe Y Down position<br>
+      <input type="checkbox" onclick="toggleInputVector(this)" value="bird.posY" checked> Bird position Y<br>
+      <input type="checkbox" onclick="toggleInputVector(this)" value="bird.velX" checked> Bird velocity X<br>
+      <input type="checkbox" onclick="toggleInputVector(this)" value="bird.velY"> Bird velocity Y<br>
+      <br>
+      <input type="number" min="1" max="8" value="6" onchange="updateHiddenLayer(this)" style="width:40px"/> Hidden Layer Size<br>
+    </div>
+    <div class="col-4">
+      <p>World Settings</p> 
+      <input type="checkbox" onclick="toggleNewMapEachGen(this)" checked> NewMapEachGen<br>
+      <input type="checkbox" onclick="toggleRandomHoseX(this)"> RandomHoseX<br>
+      <br>
+      <input type="number" min="0" max="5" step="0.01" value="0.25" onchange="updateAcceleration(this)" style="width:60px"/> X-Acceleration<br>
+      <br>
+      <input type="number" min="4" max="32" value="16" onchange="updatePopulationSize(this)" style="width:40px"/> Population Size<br>
+    </div>
+    <div class="col-4">
+      <p>Game Settings</p> 
+      <input type="checkbox" onclick="togglePaused(this)" checked> Running<br>
+      <br>
+      <button onclick="cc.director.runScene(new GameScene());">Reset</button>
+    </div>
+  </div>
+  
+<script>
+    function updateAcceleration(el) {
+      Parameters.Acceleration = el.value;
+    }
+  
+    function updateHiddenLayer(el) {
+      Parameters.HiddenLayerSize = el.value;
+    }
+  
+    function updatePopulationSize(el) {
+      Parameters.PopulationSize = el.value;
+    }
+  
+    function toggleNewMapEachGen(el) {
+        Parameters.NewMapEachGen = !Parameters.NewMapEachGen;
+        el.checked = !Parameters.NewMapEachGen;
+    }
+    function toggleRandomHoseX(el) {
+        Parameters.RandomHoseX = !Parameters.RandomHoseX;
+        el.checked = !Parameters.RandomHoseX;
+    }
+  
+    function togglePaused(el) {
+        Parameters.Paused = !Parameters.Paused;
+        el.checked = !Parameters.Paused;
+    }
+  
+    function toggleInputVector(el) {
+      Parameters.Paused = true;
+      setTimeout( () => {
+        Parameters.InputVector[el.value] = !Parameters.InputVector[el.value];
+        el.checked = Parameters.InputVector[el.value];
+        cc.director.runScene(new GameScene());
+        setTimeout( () => {
+          Parameters.Paused = false;
+        }, 100)
+      }, 100)
+    }
+  </script>
+
   <!-- Load Cocos2D-js.js -->
   <script src="lib/cocos2d-js-v3.13.js"></script>
   <!-- Load TensorFlow.js -->
