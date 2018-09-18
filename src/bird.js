@@ -63,7 +63,7 @@ class Brain {
             "top of closest pipe opening",
             "bottom of closest pipe opening",
             "bird's y position",
-            "bird's y velocity",
+            "bird's x velocity",
         ];
         var outputLabels = [
             "Idle",
@@ -169,7 +169,7 @@ class Bird {
         this.body.ApplyImpulse(new b2Vec2(5, 0), this.body.GetWorldCenter())
         this.body.ApplyForce(new b2Vec2(0.25,0), this.body.GetWorldCenter() );
 
-        this.brain = new Brain(4, 6, 2);
+        this.brain = new Brain(5, 6, 2);
         this.alive = true;
     }
 
@@ -245,6 +245,8 @@ class Bird {
         inputs[3] = map(this.body.GetPosition().y, 0, winSize.height / PTM_RATIO, 0, 1);
         // bird's y velocity
         //inputs[4] = 0;//map(this.body.GetLinearVelocity().y, -10, 10, 0, 1);
+        // bird's x velocity
+        inputs[4] = map(this.body.GetLinearVelocity().y, 5, 50, 0, 1);
 
         // Get the outputs from the network
         let action = this.brain.predict(inputs);

@@ -196,8 +196,10 @@ var GameScene = cc.Scene.extend({
 
             this.hud.updateScore(this.score);
     
-            if(this.population.length > 0)
-                this.worldLayer.x = -this.population[0].getNode().x + winSize.width / 2;            
+            if(this.population.length > 0) {
+                //console.log("Speed: " + map(this.population[0].body.GetLinearVelocity().y, 4, 50, 0, 1));
+                this.worldLayer.x = -this.population[0].getNode().x + winSize.width / 2;   
+            }         
         } else {            
             this.evolve();     
         }
