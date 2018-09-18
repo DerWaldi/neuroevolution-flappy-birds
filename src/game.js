@@ -70,6 +70,7 @@ var GameScene = cc.Scene.extend({
         new RepeatingBackground(this);
         
         this.generation = 0;
+        this.highscore = 0;
         this.population = [];
         this.createWorld();
 
@@ -90,7 +91,6 @@ var GameScene = cc.Scene.extend({
         this.hud.updateAliveBirds(this.population.length, 16);
             
         this.gameState = 0;
-        this.highscore = 0;
 
         this.evolve = () => {
             this.generation++;
