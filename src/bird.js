@@ -167,9 +167,9 @@ class Bird {
         this.body.name = "bird";
         
         this.body.ApplyImpulse(new b2Vec2(5, 0), this.body.GetWorldCenter())
-        //this.body.ApplyForce(new b2Vec2(1,0), this.body.GetWorldCenter() );
+        this.body.ApplyForce(new b2Vec2(0.25,0), this.body.GetWorldCenter() );
 
-        this.brain = new Brain(5, 6, 2);
+        this.brain = new Brain(4, 6, 2);
         this.alive = true;
     }
 
@@ -239,7 +239,7 @@ class Bird {
         // bird's y position
         inputs[3] = map(this.body.GetPosition().y, 0, winSize.height / PTM_RATIO, 0, 1);
         // bird's y velocity
-        inputs[4] = map(this.body.GetLinearVelocity().y, -10, 10, 0, 1);
+        //inputs[4] = 0;//map(this.body.GetLinearVelocity().y, -10, 10, 0, 1);
 
         // Get the outputs from the network
         let action = this.brain.predict(inputs);
