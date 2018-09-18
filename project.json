@@ -16,6 +16,7 @@
         "src/helper.js",
         "src/objects.js",
         "src/bird.js",
+        "src/hud.js",
         "src/game.js"
     ]
 }

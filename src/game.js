@@ -1,7 +1,7 @@
 var winSize;
 var curScene;
 
-const POPULATION_SIZE = 4;
+const POPULATION_SIZE = 16;
 
 var GameScene = cc.Scene.extend({
     onEnter:function () {
@@ -16,29 +16,8 @@ var GameScene = cc.Scene.extend({
         curScene = this;
         
         // GUI
-        this.guiLayer = cc.Layer.create();
-        this.addChild(this.guiLayer, 10);
-    
-        this.scoreLabel = ccui.Text.create("Score");
-        this.scoreLabel.setColor(cc.color.WHITE);
-        this.scoreLabel.setFontSize(24)
-        this.scoreLabel.setPosition(20, 628);
-        this.scoreLabel.setAnchorPoint(0,0);
-        this.guiLayer.addChild(this.scoreLabel);
-    
-        this.highScoreLabel = ccui.Text.create("HighScore");
-        this.highScoreLabel.setColor(cc.color.WHITE);
-        this.highScoreLabel.setFontSize(24)
-        this.highScoreLabel.setPosition(20, 588);
-        this.highScoreLabel.setAnchorPoint(0,0);
-        this.guiLayer.addChild(this.highScoreLabel);
-    
-        this.generationLabel = ccui.Text.create("Generation");
-        this.generationLabel.setColor(cc.color.WHITE);
-        this.generationLabel.setFontSize(24)
-        this.generationLabel.setPosition(20, 668);
-        this.generationLabel.setAnchorPoint(0,0);
-        this.guiLayer.addChild(this.generationLabel);
+        this.hud = new Hud();
+        this.addChild(this.hud, 10);
         
         // pre generate hose positions
         this.hoseCounter = 0;
@@ -56,6 +35,9 @@ var GameScene = cc.Scene.extend({
         }
 
         this.createWorld = () => {
+            this.hud.updateGeneration(this.generation);
+            this.hud.updateHighScore(this.highscore);
+
             this.hoseCounter = 0;
             // Destroy World
             while(this.world.GetBodyCount() > 0) {
@@ -87,6 +69,8 @@ var GameScene = cc.Scene.extend({
         
         new RepeatingBackground(this);
         
+        this.generation = 0;
+        this.population = [];
         this.createWorld();
 
         this.worldLayer.getClosestHose = () => {          
@@ -98,18 +82,18 @@ var GameScene = cc.Scene.extend({
             }
         }  
         
-        this.generation = 0;
-        this.population = [];
         this.fittest = [];
         for(var i = 0; i < POPULATION_SIZE; i++)
             this.population.push(new Bird(this.worldLayer, i));
             
         this.population[0].brain.visualize(document.getElementById('mynetwork'));
+        this.hud.updateAliveBirds(this.population.length, 16);
             
         this.gameState = 0;
         this.highscore = 0;
 
         this.evolve = () => {
+            this.generation++;
             this.createWorld();
             // do evolution
             var child1 = this.fittest[0].crossover(this.fittest[1]);
@@ -129,15 +113,15 @@ var GameScene = cc.Scene.extend({
         
             this.population = [child1, child2, child3, child4, child5, child6, parent1, parent2];
             var popuCount = this.population.length;
-            for(var i = 0; i < popuCount; i++) {
+            for(var i = 0; i <= popuCount; i++) {
                 var b = this.population[i].clone();
                 b.brain.mutate();
                 this.population.push(b);
             }
             this.fittest = [];
 
-            this.generation++;
             this.gameState = 0;
+            this.hud.updateAliveBirds(this.population.length, 16);
         };
 
         var listener = new Box2D.Dynamics.b2ContactListener;
@@ -150,6 +134,8 @@ var GameScene = cc.Scene.extend({
 
                     if(this.population.length < 2) 
                         this.fittest.push(bird);
+                    
+                    this.hud.updateAliveBirds(this.population.length, 16);
                 }
                 if(this.population.length < 1) {
                     this.gameState = 1;        
@@ -158,18 +144,6 @@ var GameScene = cc.Scene.extend({
         }
         this.world.SetContactListener(listener);
         
-        
-        // some mouse events
-        if( 'mouse' in cc.sys.capabilities ) {
-            cc.eventManager.addListener({ event: cc.EventListener.MOUSE,
-                onMouseDown: (event) => {
-                    this.population[0].flap();
-                }
-            }, this);
-        } else {
-            cc.log("MOUSE Not supported");
-        }
-
         this.scheduleUpdate();
         
         //_enableDebugDraw();
@@ -220,9 +194,7 @@ var GameScene = cc.Scene.extend({
                 bird.think();
             });
 
-            this.generationLabel.setString("Generation: " + this.generation);
-            this.scoreLabel.setString("Score:" + this.score);
-            this.highScoreLabel.setString("HighScore:" + this.highscore);
+            this.hud.updateScore(this.score);
     
             if(this.population.length > 0)
                 this.worldLayer.x = -this.population[0].getNode().x + winSize.width / 2;            
