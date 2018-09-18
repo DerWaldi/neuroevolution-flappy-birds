@@ -205,6 +205,11 @@ class Bird {
 		return new_bird;
 	}
 
+    mutate() {
+        this.brain.mutate();
+        return this;
+    }
+
 	crossover(partner) {
 		let parentA_in_dna = this.brain.input_weights.dataSync();
 		let parentA_out_dna = this.brain.output_weights.dataSync();
