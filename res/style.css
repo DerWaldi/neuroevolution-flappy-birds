@@ -34,11 +34,11 @@ flex-direction: column;
 }
 
 #Cocos2dGameContainer {
-height: 460px !important;
-width: 780px !important;
+/*height: 460px !important;
+width: 780px !important;*/
 position: relative;
 overflow: hidden;
-left: calc(50% - 390px);
+/*left: calc(50% - 390px);*/
 padding: 0 !important;
 
 display: -webkit-box;
@@ -48,19 +48,10 @@ display: -webkit-box;
 margin: auto;
 }
 
-#gameCanvas {
-    height: 400px;
-    width: 780px;
-    max-height: 400px;
-    max-width: 780px;
-}
-
 #mynetwork {
     position: relative;
     overflow: hidden;
-    left: calc(50% - 390px);
-
-    width: 780px;
+    pointer-events: none;
     height: 300px;
 }
 
@@ -68,10 +59,26 @@ canvas {
 background-color: rgba(0, 0, 0, 0);
 }
 
-.parameterBox {
-    position: relative;
-    overflow: hidden;
-    left: calc(50% - 390px);    
-    width: 780px;
-    height: 300px;
+#tabs{
+	background: #1B8591;
+    color: #eee;
+}
+#tabs h6.section-title{
+    color: #eee;
+}
+
+#tabs .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #1B8591;
+    background-color: transparent;
+    border-color: transparent transparent #f3f3f3;
+    border-bottom: 4px solid !important;
+    font-size: 16px;
+    font-weight: bold;
+}
+#tabs .nav-tabs .nav-item .nav-link, .nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    color: #666;
+    font-size: 16px;
 }

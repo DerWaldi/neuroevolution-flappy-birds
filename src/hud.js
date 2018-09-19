@@ -42,11 +42,9 @@ class Hud extends cc.Layer {
         this.liveDisplay.removeAllChildren();   
         for(var i = 0; i < populationSize; i++) {
             var sprite = cc.Sprite.create("#bird3.png");
-            if(i >= 8) {
-                sprite.setPosition(winSize.width - (i-8) * 40 - 20, winSize.height - 60);
-            } else {
-                sprite.setPosition(winSize.width - i * 40 - 20, winSize.height - 20);
-            }
+            
+            sprite.setPosition(winSize.width - (i- Math.floor(i/8)*8) * 40 - 20, winSize.height - 20 - Math.floor(i/8)*40);
+
             sprite.setAnchorPoint(1,1);
             sprite.setScale(0.5);
             if(i >= alive) {
@@ -54,6 +52,5 @@ class Hud extends cc.Layer {
             }
             this.liveDisplay.addChild(sprite);
         }
-        //this.highScoreLabel.setString("HighScore:" + highscore);
     }
 }

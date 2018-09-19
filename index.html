@@ -33,57 +33,83 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
       integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="res/style.css">
 </head>
-<body>
+<body style="overflow-x: hidden;">
   <script src="res/loading.js"></script>
 
-  <div id="Brain" class="tabcontent">
-    <div id="mynetwork"></div>
-  </div>
-
-  <canvas id="gameCanvas"></canvas>
-  <br/>
-  <div class="row parameterBox">
-    <div class="col-4">
-      <p>Neural Net Input Vector</p> 
-      <input type="checkbox" onclick="toggleInputVector(this)" value="pipe.x" checked> Pipe X position<br>
-      <input type="checkbox" onclick="toggleInputVector(this)" value="pipe.yUp" checked> Pipe Y Up position<br>
-      <input type="checkbox" onclick="toggleInputVector(this)" value="pipe.yDown" checked> Pipe Y Down position<br>
-      <input type="checkbox" onclick="toggleInputVector(this)" value="bird.posY" checked> Bird position Y<br>
-      <input type="checkbox" onclick="toggleInputVector(this)" value="bird.velX" checked> Bird velocity X<br>
-      <input type="checkbox" onclick="toggleInputVector(this)" value="bird.velY"> Bird velocity Y<br>
-      <br>
-      <input type="number" min="1" max="8" value="6" onchange="updateHiddenLayer(this)" style="width:40px"/> Hidden Layer Size<br>
+  <div class="container" style="max-width: 780px !important; padding: 0;">
+    <br/>
+    <h4>Neuroevolution Flappy Bird</h4> 
+    <br/>
+    <canvas id="gameCanvas"></canvas>
+    <br/>
+    <nav>
+      <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Fittest brain</a>
+        <a class="nav-item nav-link" id="nav-param-tab" data-toggle="tab" href="#nav-param" role="tab" aria-controls="nav-param" aria-selected="false">Parameters</a>
+        <a class="nav-item nav-link" id="nav-about-tab" data-toggle="tab" href="#nav-about" role="tab" aria-controls="nav-about" aria-selected="false">About</a>
+      </div>
+    </nav>
+    <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <div id="mynetwork"></div>
+      </div>
+      <div class="tab-pane fade" id="nav-param" role="tabpanel" aria-labelledby="nav-param-tab">
+        <div class="row parameterBox">
+          <div class="col-sm-12 col-md-4">
+            <h4>Neural Net Input</h4> 
+            <input type="checkbox" onclick="toggleInputVector(this)" value="pipe.x" checked> Pipe X position<br>
+            <input type="checkbox" onclick="toggleInputVector(this)" value="pipe.yUp" checked> Pipe Y Up position<br>
+            <input type="checkbox" onclick="toggleInputVector(this)" value="pipe.yDown" checked> Pipe Y Down position<br>
+            <input type="checkbox" onclick="toggleInputVector(this)" value="bird.posY" checked> Bird position Y<br>
+            <input type="checkbox" onclick="toggleInputVector(this)" value="bird.velY"checked> Bird velocity Y<br>
+            <input type="checkbox" onclick="toggleInputVector(this)" value="bird.velX"> Bird velocity X<br>
+            <br>
+            <input type="number" min="1" max="8" value="6" onchange="updateHiddenLayer(this)" style="width:40px"/> Hidden Layer Size<br>
+            <br>
+          </div>
+          <div class="col-sm-8 col-md-4">
+            <h4>World Settings</h4> 
+            <input type="checkbox" onclick="toggleNewMapEachGen(this)" checked> New map each Generation<br>
+            <input type="checkbox" onclick="toggleRandomHoseX(this)"> Random hose X-offset<br>
+            <br>
+            <input type="number" min="0" max="5" step="0.01" value="0.25" onchange="updateAcceleration(this)" style="width:60px"/> X-Acceleration<br>
+            <br>
+            <input type="number" min="4" max="32" value="16" onchange="updatePopulationSize(this)" style="width:40px"/> Population Size<br>
+            <br>
+          </div>
+          <div class="col-sm-8 col-md-4">
+            <h4>Game Settings</h4> 
+            <input type="checkbox" onclick="togglePaused(this)" checked> Running<br>
+            <br>
+            <button onclick="cc.director.runScene(new GameScene());">Reset</button>
+            <br>
+          </div>
+        </div>        
+      </div>
+      <div class="tab-pane fade" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+        <p>Get the sourcecode on GitHub:</p>
+        <a href="https://github.com/DerWaldi/neuroevolution-flappy-birds">https://github.com/DerWaldi/neuroevolution-flappy-birds</a>
+      </div>
     </div>
-    <div class="col-4">
-      <p>World Settings</p> 
-      <input type="checkbox" onclick="toggleNewMapEachGen(this)" checked> NewMapEachGen<br>
-      <input type="checkbox" onclick="toggleRandomHoseX(this)"> RandomHoseX<br>
-      <br>
-      <input type="number" min="0" max="5" step="0.01" value="0.25" onchange="updateAcceleration(this)" style="width:60px"/> X-Acceleration<br>
-      <br>
-      <input type="number" min="4" max="32" value="16" onchange="updatePopulationSize(this)" style="width:40px"/> Population Size<br>
-    </div>
-    <div class="col-4">
-      <p>Game Settings</p> 
-      <input type="checkbox" onclick="togglePaused(this)" checked> Running<br>
-      <br>
-      <button onclick="cc.director.runScene(new GameScene());">Reset</button>
-    </div>
+    
   </div>
   
 <script>
     function updateAcceleration(el) {
-      Parameters.Acceleration = el.value;
+      Parameters.Acceleration = parseFloat(el.value);
     }
   
     function updateHiddenLayer(el) {
-      Parameters.HiddenLayerSize = el.value;
+      Parameters.HiddenLayerSize = parseInt(el.value);
     }
   
     function updatePopulationSize(el) {
-      Parameters.PopulationSize = el.value;
+      Parameters.PopulationSize = parseInt(el.value);
     }
   
     function toggleNewMapEachGen(el) {

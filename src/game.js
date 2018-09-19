@@ -13,8 +13,8 @@ Parameters.InputVector["pipe.x"] = true;
 Parameters.InputVector["pipe.yUp"] = true;
 Parameters.InputVector["pipe.yDown"] = true;
 Parameters.InputVector["bird.posY"] = true;
-Parameters.InputVector["bird.velX"] = true;
-Parameters.InputVector["bird.velY"] = false;
+Parameters.InputVector["bird.velX"] = false;
+Parameters.InputVector["bird.velY"] = true;
 
 Parameters.Paused = false;
 
@@ -109,7 +109,7 @@ var GameScene = cc.Scene.extend({
             this.population.push(new Bird(this.worldLayer, i));
             
         this.population[0].visualize(document.getElementById('mynetwork'));
-        this.hud.updateAliveBirds(this.population.length, 16);
+        this.hud.updateAliveBirds(this.population.length, Parameters.PopulationSize);
             
         this.gameState = 0;
 
@@ -139,7 +139,7 @@ var GameScene = cc.Scene.extend({
             this.fittest = [];
 
             this.gameState = 0;
-            this.hud.updateAliveBirds(this.population.length, 16);
+            this.hud.updateAliveBirds(this.population.length, Parameters.PopulationSize);
         };
 
         var listener = new Box2D.Dynamics.b2ContactListener;
@@ -153,7 +153,7 @@ var GameScene = cc.Scene.extend({
                     if(this.population.length < 2) 
                         this.fittest.push(bird);
                     
-                    this.hud.updateAliveBirds(this.population.length, 16);
+                    this.hud.updateAliveBirds(this.population.length, Parameters.PopulationSize);
                 }
                 if(this.population.length < 1) {
                     this.gameState = 1;        
